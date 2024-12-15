@@ -1,0 +1,4 @@
+com\example\MyMagentoProject\pageObjects\LoginPage.class
+com\example\MyMagentoProject\utilities\ConfigReader.class
+com\example\MyMagentoProject\utilities\EncryptCredentials.class
+com\example\MyMagentoProject\utilities\DriverManager.class

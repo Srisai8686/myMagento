@@ -218,7 +218,7 @@ public class AddToCartSteps {
     	System.out.println("order number is:"+orderNum);
     	
     	HelperUtils.click(driver, payment.buttonContinue());
-    	
+    	//added the continue button 
     }
     
     

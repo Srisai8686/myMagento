@@ -26,7 +26,7 @@ public class Hooks {
     // Global shutdown hook to ensure the driver quits once all tests are done
     static {
         Runtime.getRuntime().addShutdownHook(new Thread(() -> {
-            //DriverManager.quitDriver(); // Ensure driver quits on JVM shutdown
+            DriverManager.quitDriver(); // Ensure driver quits on JVM shutdown
         }));
     }
 }

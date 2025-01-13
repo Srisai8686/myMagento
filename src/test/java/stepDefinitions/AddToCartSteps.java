@@ -25,7 +25,7 @@ public class AddToCartSteps {
     private ShippingPage shipping;
     private double shipCharge;
     private double orderAmount;
-    private double TotalOrder;
+    private double totalOrder;
 
     public AddToCartSteps() {
         this.driver = DriverManager.getDriver();
@@ -141,7 +141,7 @@ public class AddToCartSteps {
     	HelperUtils.click(driver, checkout.clickProccedToCheckoutBtn());
     }
     @Then("select desired Shipping methods")
-    public double select_desrired_shipping_methods() {
+    public void select_desrired_shipping_methods() {
         // Write code here that turns the phrase above into concrete actions
         //throw new io.cucumber.java.PendingException();)
     	HelperUtils.click(driver, shipping.shippingTableRate());	
@@ -152,37 +152,42 @@ public class AddToCartSteps {
     	if (getShippingCharge.isEmpty()) {
     		throw new NumberFormatException("Shipping charge string is empty");
     		}
-    	double shipCharge = Double.parseDouble(getShippingCharge);
-    	return shipCharge;
+    	shipCharge = Double.parseDouble(getShippingCharge);
+    	System.out.println("Parsed shipCharge: " + shipCharge);
+    	//return shipCharge;
     }
     @Then("order summary get the order amount")
-    public double order_summary_get_the_order_amount() {
+    public void order_summary_get_the_order_amount() {
         // Write code here that turns the phrase above into concrete actions
         //throw new io.cucumber.java.PendingException();
     	HelperUtils.click(driver, shipping.returnCartItems());
     	HelperUtils.waitForElementToBeVisible(driver, shipping.getItemPrice(), 5);
     	String itemPrice =HelperUtils.getText(driver, shipping.getItemPrice());
+    	System.out.println("itemPrice is:"+itemPrice);
     	getProductPrice = itemPrice.replace("$", "").trim();
-    	double orderAmount = Double.parseDouble(getProductPrice);
-    	System.out.println(orderAmount);
-    	return orderAmount;
+    	orderAmount = Double.parseDouble(getProductPrice);
+    	System.out.println("Parsed orderAmount: " + orderAmount);
+    	//return orderAmount;
     	
     }
     @Then("click Next and verify order total shiping amount is added to order amount")
-    public double click_next_and_verify_order_total_shiping_amount_is_added_to_order_amount() {
+    public void click_next_and_verify_order_total_shiping_amount_is_added_to_order_amount() {
         // Write code here that turns the phrase above into concrete actions
         //throw new io.cucumber.java.PendingException();
     	HelperUtils.click(driver, shipping.clickNext());
+    	System.out.println("shipCharge: " + shipCharge); 
+    	System.out.println("orderAmount: " + orderAmount);
     	
-    	double TotalOrder = shipCharge+orderAmount;
-    	System.out.println(TotalOrder);
-    	return TotalOrder;
+    	 totalOrder = shipCharge+orderAmount;
+    	 System.out.println("Calculated totalOrder: " + totalOrder);
+    	System.out.println(totalOrder);
+    	//return TotalOrder;
     	
     	
     	
     }
     @Then("click on place order and verify the order purchase message and order number")
-    public void click_on_place_order_and_verify_the_order_purchase_message_and_order_number() {
+    public void click_on_place_order_and_verify_the_order_purchase_message_and_order_number() throws InterruptedException {
         // Write code here that turns the phrase above into concrete actions
         //throw new io.cucumber.java.PendingException();
     	
@@ -193,22 +198,27 @@ public class AddToCartSteps {
     	
     	System.out.println("Amount is:"+totalItemPrice);
     	
-    	if(totalItemPrice==TotalOrder) {
+    	if(totalItemPrice==totalOrder) {
     		System.out.println("The amounts are equal.");
     	}
     	else {
-    		System.out.println("The amounts are not equal"+"because"+totalItemPrice+"&&"+TotalOrder);
+    		System.out.println("The amounts are not equal"+"because"+totalItemPrice+"&&"+totalOrder);
     	}
+    	
+    	Thread.sleep(3000);
     	
     	HelperUtils.click(driver, payment.placeOrder());
     	
     	String message = HelperUtils.getText(driver, payment.orderPlacedMessage());
     	if(message.contains("Thank you")) {
-    		System.out.println("order placed succesfully");
+    		System.out.println("order message :"+message);
     	}
     	
     	String orderNum = HelperUtils.getText(driver, payment.orderNum());
     	System.out.println("order number is:"+orderNum);
+    	
+    	HelperUtils.click(driver, payment.buttonContinue());
+    	
     }
     
     

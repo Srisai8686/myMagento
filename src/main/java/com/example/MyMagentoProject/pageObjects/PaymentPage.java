@@ -74,6 +74,11 @@ public class PaymentPage {
 		
 	}
 	
+	public WebElement buttonContinue() {
+		return btnContinueShopping;
+		
+	}
+	
 	
 	
 }

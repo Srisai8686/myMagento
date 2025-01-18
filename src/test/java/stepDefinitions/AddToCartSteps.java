@@ -1,7 +1,10 @@
 package stepDefinitions;
 
+import io.cucumber.datatable.DataTable;
 import io.cucumber.java.en.And;
 import io.cucumber.java.en.Then;
+import io.cucumber.java.en.When;
+
 import com.example.MyMagentoProject.pageObjects.CategorySelection;
 import com.example.MyMagentoProject.pageObjects.CheckoutPage;
 import com.example.MyMagentoProject.pageObjects.PaymentPage;
@@ -10,6 +13,7 @@ import com.example.MyMagentoProject.utilities.DriverManager;
 import com.example.MyMagentoProject.utilities.HelperUtils;
 
 import java.util.List;
+import java.util.Map;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
@@ -35,18 +39,67 @@ public class AddToCartSteps {
         //this.payment = new PaymentPage(driver);
     }
 
+    //Re-usable methods
+    
+    private void navigateToCategory(String category) {
+    	HelperUtils.waitForElementToBeVisible(driver, categorySelection.getCategory(category), 5);
+    	HelperUtils.click(driver, categorySelection.getCategory(category));
+    	}
+    
+    private void navigateToSubcategory(String subcategory) {
+    	HelperUtils.waitForElementToBeVisible(driver, categorySelection.getSubCategory(subcategory), 5);
+    	HelperUtils.click(driver, categorySelection.getSubCategory(subcategory));
+    	}
+    
+    private void searchForProductByName(String productName) {
+    	HelperUtils.waitForElementToBeVisible(driver, categorySelection.getProductName(productName), 5);
+    	HelperUtils.click(driver, categorySelection.getProductName(productName));
+    	selectedProductName = productName;
+    	}
+    
+    private void selectColor(String color) {
+    	HelperUtils.waitForElementToBeVisible(driver, categorySelection.getItemColor(color), 5);
+    	HelperUtils.click(driver, categorySelection.getItemColor(color));
+    	}
+    
+    private void clickAddToCartButton() {
+    	HelperUtils.waitForElementToBeClickable(driver, categorySelection.cartButton(), 5);
+    	HelperUtils.click(driver, categorySelection.cartButton());
+    	}
+    
+    private void addProductToCart(String category, String subcategory, String productName, String size, String color) {
+    	navigateToCategory(category);
+    	if (!subcategory.isEmpty()) {
+    		navigateToSubcategory(subcategory);
+    		} 
+    	searchForProductByName(productName); 
+    	if (!size.equals("-")) {
+    		selectSize(size); 
+    		} 
+    	if (!color.equals("-")) {
+    			selectColor(color);
+    			} 
+    		clickAddToCartButton();
+    	}
+    private void selectSize(String size) {
+    	HelperUtils.waitForElementToBeVisible(driver, categorySelection.getItemSize(size), 5);
+    	HelperUtils.click(driver, categorySelection.getItemSize(size));
+    	}
+    
     @And("I navigate to the {string} category")
     public void i_navigate_to_the_category(String category) {
-        HelperUtils.waitForElementToBeVisible(driver, categorySelection.getCategory(category), 5);
-        HelperUtils.click(driver, categorySelection.getCategory(category));
+        //HelperUtils.waitForElementToBeVisible(driver, categorySelection.getCategory(category), 5);
+        //HelperUtils.click(driver, categorySelection.getCategory(category));
+    	navigateToCategory(category);
     }
 
     @And("I navigate to the subcategory and click on {string}")
     public void i_navigate_to_the_subcategory_and_click_on(String itemType) {
         //HelperUtils.waitForElementToBeVisible(driver, categorySelection.getSubCategory(subcategory), 5);
         //HelperUtils.click(driver, categorySelection.getSubCategory(subcategory));
-        HelperUtils.waitForElementToBeVisible(driver, categorySelection.getMenuItem(itemType), 5);
-        HelperUtils.click(driver, categorySelection.getMenuItem(itemType));
+        //HelperUtils.waitForElementToBeVisible(driver, categorySelection.getMenuItem(itemType), 5);
+        //HelperUtils.click(driver, categorySelection.getMenuItem(itemType));
+    	navigateToSubcategory(itemType);
     }
 
     @And("I search for the desired jacket by name {string}")
@@ -69,33 +122,54 @@ public class AddToCartSteps {
 		 * break; } }
 		 */
     	   
-    	   HelperUtils.waitForElementToBeVisible(driver, categorySelection.getProductName(product), 5);
-           HelperUtils.click(driver, categorySelection.getProductName(product));
-           selectedProductName = product;
+    	   //HelperUtils.waitForElementToBeVisible(driver, categorySelection.getProductName(product), 5);
+           //HelperUtils.click(driver, categorySelection.getProductName(product));
+           //selectedProductName = product;
+    	   searchForProductByName(product);
     	   return product;
     
     }
 
     @And("I select size {string} and color {string}")
     public void i_select_size_and_color(String size, String color) {
-        HelperUtils.waitForElementToBeVisible(driver, categorySelection.getItemSize(size), 5);
-        HelperUtils.click(driver, categorySelection.getItemSize(size));
-        HelperUtils.waitForElementToBeVisible(driver, categorySelection.getItemColor(color), 5);
-        HelperUtils.click(driver, categorySelection.getItemColor(color));
+        //HelperUtils.waitForElementToBeVisible(driver, categorySelection.getItemSize(size), 5);
+        //HelperUtils.click(driver, categorySelection.getItemSize(size));
+        //HelperUtils.waitForElementToBeVisible(driver, categorySelection.getItemColor(color), 5);
+        //HelperUtils.click(driver, categorySelection.getItemColor(color));
+    	selectSize(size);
+    	selectColor(color);
     }
 
     @And("I click on the {string} button")
     public void i_click_on_the_button(String buttonName) {
-        if (buttonName.equals("Add to Cart")) {
-            HelperUtils.waitForElementToBeClickable(driver, categorySelection.cartButton(), 5);
-            HelperUtils.click(driver, categorySelection.cartButton());
-		} /*
+        //if (buttonName.equals("Add to Cart")) {
+          //  HelperUtils.waitForElementToBeClickable(driver, categorySelection.cartButton(), 5);
+           // HelperUtils.click(driver, categorySelection.cartButton());
+	//	}
+    /*
 			 * else if (buttonName.equals("View/Edit Cart")) {
 			 * HelperUtils.waitForElementToBeClickable(driver,
 			 * categorySelection.cartViewLink(), 5); HelperUtils.click(driver,
 			 * categorySelection.cartViewLink()); }
 			 */
+    	if (buttonName.equals("Add to Cart")) {
+    		clickAddToCartButton();
+    	}
     }
+    
+    @When("^I add the following products to the cart:$") 
+    public void i_add_the_following_products_to_the_cart(DataTable products) {
+    	List<Map<String, String>> productList = products.asMaps(String.class, String.class);
+    	for (Map<String, String> product : productList) 
+    	{
+    		String category = product.get("Category");
+    		String subcategory = product.get("Subcategory");
+    		String productName = product.get("Product Name");
+    		String size = product.get("Size");
+    		String color = product.get("Color");
+    		addProductToCart(category, subcategory, productName, size, color);
+    		}
+    	}
 
     @Then("I should see the desired jacket in the cart")
     public void i_should_see_the_desired_jacket_in_the_cart() {
@@ -157,9 +231,10 @@ public class AddToCartSteps {
     	//return shipCharge;
     }
     @Then("order summary get the order amount")
-    public void order_summary_get_the_order_amount() {
+    public void order_summary_get_the_order_amount() throws InterruptedException {
         // Write code here that turns the phrase above into concrete actions
         //throw new io.cucumber.java.PendingException();
+    	Thread.sleep(3000);
     	HelperUtils.click(driver, shipping.returnCartItems());
     	HelperUtils.waitForElementToBeVisible(driver, shipping.getItemPrice(), 5);
     	String itemPrice =HelperUtils.getText(driver, shipping.getItemPrice());

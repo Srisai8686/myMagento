@@ -8,7 +8,7 @@ import io.cucumber.junit.CucumberOptions;
 
 @RunWith(Cucumber.class)
 @CucumberOptions(
-    features = "src/test/resources/Features/addtocart.feature",
+    features = "src/test/resources/Features/multipleproducts.feature",
     glue = {"stepDefinitions"},
     plugin = {"pretty", "html:target/cucumber-reports"},
     monochrome = true
